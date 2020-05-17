@@ -1,0 +1,182 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+%\usepackage{pygmentize}
+%\usepackage{minted}
+\usepackage{titling}
+\usepackage{listings}
+
+\usepackage{geometry}
+\geometry{textheight=9.5in, textwidth=7in}
+
+\title{Homework 1\\\large CS444 Spring2018}
+\author{Austin Hodgin, Joshua Novak, Trent Vasquez}
+\date{\today}
+
+
+\begin{document}
+\begin{titlingpage}
+			\maketitle
+      \begin{abstract}
+			\noindent
+			Description on how to build the kernel and run it in a virtual machine on the OS2 server, as well as all the appropriate flags to call in qemu.
+      \end{abstract}
+\end{titlingpage}
+
+\newpage
+\pagenumbering{arabic}
+
+\clearpage
+\singlespace
+
+%input the pygmentized output of mt19937ar.c, using a (hopefully) unique name
+%this file only exists at compile time. Feel free to change that.
+
+
+\section{Command Log}
+For our commands we ran two different terminals connected to os2, one to setup the kernel and check things, another to run gdb. These will be broken up into separate sections to make the process easy to understand. For commands to the terminal doing work to setup the kernel, the section will be labeled Kernel, for the terminal running GDB the sections will be labeled GDB.
+    \subsection{Kernel 1}
+        \begin{itemize}
+            \item git clone -n https://git.yoctoproject.org/git/linux-yocto
+            \item cd linux-yocto
+            \item git checkout tags/v3.19.2
+            \item cp /scratch/opt/core-image-lsb-sdk-qemux86.ext4 ./
+            \item \item cp /scratch/opt/core-image-lsb-sdk-qemux86.ext4 ./
+            \item cp /scratch/opt/bzImage-qemux86.bin ./
+            \item source /scratch/files/environment-setup-i586-poky-linux.csh\
+            \item qemu-system-i386 -gdb tcp::5524 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+        \end{itemize}
+
+
+    \subsection{GDB 1}
+        \begin{itemize}
+            \item gdb -tui
+            \item (return)
+            \item target remote tcp::5524
+            \item continue
+        \end{itemize}
+
+    \subsection{Kernel 2}
+        \begin{itemize}
+            \item root
+            \item exit
+            \item(ctrl+a)
+            \item(c)
+            \item quit
+            \item cp /scratch/opt/config-3.19.2-yocto-standard ./.config
+            \item make -j4 all
+            \item make menuconfig
+        \end{itemize}
+
+
+    \subsection{Navigate UI}
+    For this section I navigated the menu as follows to make a change to the config file which I could identify later. First I navigated down the menu to General setup and pressed enter. Then I navigated down to the line that begins with (-yocto-standard) which is the name of the configuration and pressed enter. This brought me to an area where I could edit the name of the configuration. I added the characters "Group24HW1" and pressed enter (the string in the quotes, not including the quotes). Then I pressed right to get to exit and pressed enter. I pressed right to get to exit again and pressed enter. I then pressed enter at the prompt to save my configuration.
+    \subsection{Kernel 3}
+        \begin{itemize}
+            \item make -j4 all
+            \item qemu-system-i386 -gdb tcp::5524 -S -nographic -kernel arch/x86/boot/bzImage -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+        \end{itemize}
+
+
+    \subsection{GDB 2}
+        \begin{itemize}
+          \item target remote tcp::5524
+            \item continue
+        \end{itemize}
+
+    \subsection{Kernel 4}
+        \begin{itemize}
+            \item root
+            \item uname -r
+            \item The return value from this should be 3.19.2-yocto-standardGroup24HW1
+        \end{itemize}
+
+\section{Flags}
+
+    \begin{itemize}
+        \item qemu-system-i386
+            \begin{itemize}
+                \item Calls the installation of Qemu
+            \end{itemize}
+        \item -gdb tcp::????
+             \begin{itemize}
+                \item Sets the instance to be able to be debugged with gdb at the address tcp::????
+            \end{itemize}
+        \item -S
+            \begin{itemize}
+                \item Has the instance halt immediately upon starting so that it can be debugged
+            \end{itemize}
+        \item -nogrphic
+            \begin{itemize}
+                \item Has the instance run in graphic-less mode
+            \end{itemize}
+        \item -kernel bzImage-qemux86.bin
+            \begin{itemize}
+                \item Has the instance of Qemu run using the kernel buit with name bzImage-qemu86.bin
+            \end{itemize}
+        \item -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio
+            \begin{itemize}
+                \item Has the instance of Qemu use the file core-image-lsb-sdk-qemux86.ext4 as a drive. The if=virtuo part of the argument has it be used as a virtual drive.
+            \end{itemize}
+        \item -enable-kvm
+            \begin{itemize}
+                \item Enables Kernel based virtualization support.
+            \end{itemize}
+        \item -net none
+            \begin{itemize}
+                \item Configures a host network backend. The none flag configures the instance of Qemu such that there is no host network.
+            \end{itemize}
+        \item -usb
+            \begin{itemize}
+                \item Enables the USB driver
+            \end{itemize}
+        \item -localtime
+            \begin{itemize}
+                \item Sets the time to run in local time. This is a depreciated flag as far as I can tell, and is instead run as an option of the -rtc argument
+            \end{itemize}
+        \item --no-reboot
+            \begin{itemize}
+                \item Makes you exit instead of rebooting.
+            \end{itemize}
+        \item -append "root=/dev/vda rw console=ttyS0 debug"
+            \begin{itemize}
+                \item Directs the instance to us "root=/dev/vda rw console=ttyS0 debug" as the command line
+            \end{itemize}
+    \end{itemize}
+
+
+\section{Questions}
+    \subsection{What Was The Point?}
+    Showing that we can build our own instance of the Kernel correctly as well as teaching us about the flags for Qemu
+    \subsection{Approach}
+    We followed the listed instructions and asked TA's, friends who had taken the class before, and Kevin for help when necessary.
+    \subsection{How Did You Ensure Your Solution Was Correct?}
+    We made a change to the configuration's label and saved it to our config file. We then launched the kernel in Qemu and checked that the change to the label showed up when using uname. If the change wasn't there, then we would have known that the instance of the kernel we launched was built using the config file we changed, meaning it was likely the image given to us. Either that, or we did not build using the correct config file.
+    \subsection{What Did You Learn?}
+    We learned how to compile the kernel on the engineering server, the functions of various flags for the Qemu launch command, and how to connect to a virtual instance of the kernel in GDB. We also learned a lot about git. I imagine that will be a regular occurrence for this class.
+
+\section{Version Control Log}
+
+    \begin{center}
+        \begin{tabular}{l l l} \textbf{Date} & \textbf{Author} & \textbf{Description}\\\hline
+             04-12-2018 & AustinHodgin & Initial commit\\\hline
+             04-12-2018 &  AustinHodgin & Added .gitignore and linux-yocto\\\hline
+             04-12-2018 &  AustinHodgin & Fixing linux-yocto not being added\\\hline
+             04-12-2018 &  AustinHodgin & Trying to add linux-yocto/ and fixed .gitignore\\\hline
+             04-12-2018 &  Joshua Novak & Trying to commit again\\\hline
+             04-12-2018 &  Joshua Novak & Removed nested repo\\\hline\end{tabular}
+    \end{center}
+
+\section{Work Log}
+    \subsection{Tuesday}
+    Austin and Joshua met and worked on downloading the git repo for two hours, were able to create the folder, download the repo, and launch the provided image of the kernel.
+    \subsection{Wednesday}
+    Joshua and Trent worked on building the Kernel for an hour and a half. They were able to build and launch the kernel.
+    \subsection{Thursday}
+    Joshua ran the necessary commands to launch the kernel and prove that the new instance of the kernel was running and recorded them. This took roughly thirty minutes. Austin and Joshua worked on the write up and fixing the repo. This took roughly two hours.
+
+\bibliographystyle{IEEEtran}
+\bibliography{./ref}
+
+\end{document}

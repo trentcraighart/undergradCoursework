@@ -1,0 +1,6 @@
+﻿  sample.cpp
+Z:\CS491\ForwardTemplate\ForwardTemplate\sample.cpp(968,22): warning C4305:  '*=': truncation from 'double' to 'float'
+Z:\CS491\ForwardTemplate\ForwardTemplate\sample.cpp(969,22): warning C4305:  '*=': truncation from 'double' to 'float'
+Z:\CS491\ForwardTemplate\ForwardTemplate\sample.cpp(970,22): warning C4305:  '*=': truncation from 'double' to 'float'
+sample.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+  Sample.vcxproj -> Z:\CS491\ForwardTemplate\ForwardTemplate\.\Debug\Sample.exe

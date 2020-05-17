@@ -1,0 +1,241 @@
+\documentclass[draftclsnofoot, onecolumn] {report}
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+\title{Contrasting Fundamental Operating System Designs}
+\author{Trent Vasquez}
+\date{6/13/2018}
+\maketitle
+
+\section{Overview}
+The purpose of this document is to help distinguish some of the key differences between several prevalent operating systems and how they impact developers and users. 
+While ultimately that is a very robust question to answer in short, we will be talking about several key topics piece by piece using the Linux, FreeBSD, and Windows operating systems.
+In chapter one we will distinguish different schemes in handling processes, threads, and cpu scheduling on a kernel basis. 
+Proceeding in chapter two, we will dig into how the operating system works  in junction to I/O including algorithms, data structures, and cryptography systems. 
+Another critical part that will be covered is the virtual and normal file systems and how they relate to the operating system. 
+Concluding the document, Interrupt methodology will be highlighted between the three operating systems and how they implement them.
+While each of these sections can't independently represent the whole of the operating system, in tandem they begin to paint the larger picture of the complexities in which an operating system entails.
+
+\chapter{OS Differences in Processes, Threads, and CPU Scheduling}
+
+\section{Introduction}
+While all the Unix based operating systems rely on a kernel to help manage threads and processes, they can take some dramatic differences in their structure. 
+Linux, being one of the most notable operating systems, will be the basis of comparison between FreeBsd and Windows.
+
+\section{Processes and Threads}
+Inside the Linux OS, a process is what could be defined as an instance of a running program. 
+Within each of these processes, we can see that the structure contains the following:
+\begin{itemize}
+\item Stack: This is where all the processes local variables and data are stored. In addition this stack will grow dynamically as the process needs.
+\item Heap: The contents of the heap are where dynamically requested memory is stored for variables. 
+\item Data: The location of the global variables are stored.
+\item Text: This is where the program is stored along with all constants.
+\end{itemize}
+Another key note to hit about Linux processes is that they all are derived from their parent. 
+This hierarchical structure leads back to a single process init that is called when the system boots.
+In addition, threads in Linux work almost identically to processes, except for the caveat that threads share the resources delegated by their parent with other sibling threads. 
+This will often lead to situations where programmers will coordinate variables and I/O through pipes that connect the threads together
+
+\subsection{FreeBSD}
+Inside of the FreeBSD OS, a process is simply defined as a program that is currently running.
+In addition, the structure of the process contains the address space of the code and global as well as kernel resources that include credentials, signal states, and descriptor arrays. 
+One key difference betwen Linux and FreeBSD is how threads are defined.
+Within the context of FreeBSD, threads are the real time execution of a the process. 
+For an analogy, the process in FreeBSD is a bucket holding all of the threads doing work inside it's bounds.
+
+\subsection{Windows}
+Within the context of Windows OS, processes are seen as executing programs that contain threads within them, very similarly to FreeBSD.
+In addition, these processes can be managed in a higher order by a "job object."
+Through the job object, processes, and pools of threads, you can see a hierarchy develop between the operating parts that work in tandem.
+
+\section{CPU scheduling}
+Inside of Linux's kernel, the creators have implemented "completely fair scheduler" (CFS). 
+The fundamental premise of CFS is that all processes and threads are treated equally for the goal of maximizing CPU efficiency. 
+While this process technically pushes CPU efficiency to it's maximum, you can easily see that this methodology may not always be the most practicle when handeling I/O.
+For example, if we had a heavy background process running that the user doesn't care about, it is now being allocated the same amount of CPU dedication as our I/O intensive program that the user actively cares about.
+
+\subsection{FreeBSD}
+While Linux works to guarantee equal CPU access, FreeBSD's approach works off of a notion that all processes have a priority assigned to them. 
+Priorities can be assigned in increasing importance from zero to two hundred and fifty five.
+The priority approach works in favor of interactive programs, but is able to allocate longer swaths of CPU access for background programs when the user isn't active. 
+Due to the more hands on approach to scheduling, other problems may arise such as thrashing.
+Thrashing is a symptom where the CPU is struggling with having to little memory.
+This then results in the processor spending more time coordinating then actually attempting to execute code.
+For the systom to combat thrashing, specific daemons will attempt to put processes on a backlog, typically with low priority.
+Another key thing about FreeBSD is that processes will be set into groups. 
+These groups limit access to terminals and deal with signals.
+While bound together in these groups, the processes will operate the same way when the signals interrupt, suspend, or terminate them. 
+In addition to handling these signals, groups help manage the use of operations like pipes and other I/O operations. 
+
+\subsection{Windows}
+Like FreeBSD, Windows also uses a scaling priority model, but instead it scales the priority values to thirty two. 
+Another commonality between Windows and FreeBSD is their group support for operations. 
+Within these proccess groups, the process and all of its threads are categorized and held. 
+In addition to the normal permissions that threads receive, many can also receive a protected status. 
+This token when given to a process makes sure that the admin has full control and can't be interrupted. 
+The kernel helps ensure this by being the main hub where process creation takes place.
+
+\section{Conclusion}
+While all three of these operating systems are valid, they are all built on some core mechanical beliefs.
+While Linux works with everything as a process, FreeBSD and Windows are much more selective in what is classified as such. 
+In addition, while threads in Linux are processes that share resources, threads in FreeBSD and Windows tend to be the core of the computation.
+When it comes kernel scheduling, Linux attempts to be a free for all on CPU time, while FreeBSD and Windows are more structured with the inclusion of priority. 
+These differences are some key factors when choosing platforms to use/develop for in higher level computational projects. 
+
+\chapter{OS Differences in I/O Functionality}
+
+\section{Introduction}
+Looking into the basic moduals of the operating systems, you see the reoccurring packages such as IO, crypto, data structures, but it grows increasingly interesting analyzing how each takes care of handling them. 
+
+\section{I/O}
+Inside all three of the operating systems, IO is handled by what are known as drivers. 
+While drivers may differ from one OS to another, their fundamental purpose is the same: help devices interact with the operating system.  
+Inside a Linux system, any device that doens't have a specific driver can invoke the use of the built in ioctl function to achive their goals. 
+While ioctl may sound like a complex function, it only takes 2 parameters to function:
+\begin{verbatim}
+long ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+\end{verbatim}
+In essence the two parameters above are the command issued and the argument that is needed to accomplish this. 
+Knowing the base call for IO, we can move in to analyze the deeper level of what happens during a an IO call. 
+When a device first sends data, it is picked up by the system call interface, and from that point it is directed to the VFS.
+Once in the VFS, the kernel send the data to the appropriate device driver where the request is processed. 
+
+
+\subsection{Windows}
+When a Windows system receives an IO request, it works in a similar way to a Linux call.
+First the device calls the IO manager to open a file and save the location onto the IO stack.
+From there it will define what type of driver it will need to understand the request made by the device.
+After the driver is found, a driver process handles the request from the device, then the IO stack is cleaned from the new additions. 
+
+
+\subsection{FreeBSD}
+While not traditional in the normal UNIX IO model, FreeBSD doesn't contain control blocks or access methods that are seen elsewhere. 
+FreeBSD operates on a list of descriptions to handle IO. 
+This demands that the kernel help process the allocation of processes to handle the IO in the system.
+In addition, FreeBSD does use drivers to interact with both external bit and block devices. 
+
+\section{Data Structures}
+Within the Linux Kernel, the following data structures are implemented; Linked Lists, Queues, Maps, and  Binary Trees.
+While the others are important, the Linked List is the key to the operating system running the way it does. 
+Many operations such as memory allocation rely on the built in data structure of Linked Lists to operate. 
+
+\subsection{Windows}
+Inside of a windows machine, the data structures are managed as collections.
+While collections may seam like an obtuse term, they specify the following; Hashtable, Array, ArrayList, Queue, and Stack. 
+There are several key features that define a collection and make them incredibly useful to the Operating system:
+\begin{itemize}
+\item The ability to iterate through the entire collection
+\item The property that all the collections contents can be copied to an array
+\item The ability to count the elements and expand in capacity
+\item They have consistent indexes for the first element
+\item They can be synchronized and accessed between multiple threads.
+\end{itemize}
+
+\subsection{FreeBSD}
+FreeBSD also has List and Queues as its main built in data structure.
+The use of these structures is critical in the system in maintaining memory
+
+\section{Crypto}
+All three operating systems hold very similar bases when it comes to their crypto api's.
+Throughout all three of them, you that they are all consistently able to handle random number generation, symmetric keys, hashing, and asynchronous keys.
+This isn't due to their own choice though, it is critical that these processes are handled on a kernel level and are consistent with the standers held around the world.
+
+\subsection{FreeBSD}
+One thing that makes FreeBSD unique in comparision to the others is in how it  invokes the processes differently. 
+When FreeBSD receives an signal to preform crypo, it  operates by making use of a dispatch queue to hold the process before it is passed off to a driver.
+Once the driver has processed the data, it returns a signal to the kernel of crypto done that then uses a callback function to pass the new data back to the initial function.
+
+\section{Conclusion}
+While all three of these operating systems approach these fundamental CS problems differently, it helps show that there isn't one right answer to most problems. 
+By analyzing the differences in crypto, IO, and data structures, we as computer scientists can achieve a higher understanding and perspective on the field of computer science as a whole. 
+
+\chapter{File System and VFS}
+
+\section{Introduction}
+One of the most critical functions of any operating system is its ability to manage and store files in a way that is useful do developers and users alike.
+The base file system is how the operating system organizes, stores, and retrieves files from storage devices. 
+One key note is that the file system never directly interacts with the kernel, but through the virtual file system.
+This stipulation allows for the operating system to use a wide variety of file systems.
+
+Unix based implementation of the virtual file system works on the core of 4 objects: superblocks, dentries, inodes, and files.
+The superblock functions as the key to processing operations on the file system and is required to be loaded at the beginning when mounting the file system.
+In addition, when the superblock is loaded, it also determines the file system that will be currently used. 
+The dentries, also known as directory entries function as path names that help during lookup operations.
+Inodes are what work as pointers to the files inside the storage device and are critical for recalling your data. 
+At the bottom of the hierarchy are the file data structures that contain all the information that is pertinent to the file such as length and positions. 
+
+\section{linux}
+One of Linux's most historic file system's is the ext2 file system, also known as the second extended file system.
+While there are a great slew of other file systems for Linux, ext2 was the first commercial-grade file system for Linux at the time. 
+Originally developed as a overhaul of the original extended file system, Berkeley research teams were able to implement a very clean and minimalist file system.
+The key factor that kept ext2 relevant for a long time was its lack of journalism, thus making it very lightweight and applicable for devices such as flash drives.
+
+\section{FreeBSD and Windows}
+FreeBSD's basic file system is the Z File System, also known as the ZFS. 
+The Z File System was initially tailored to fix problems found in other file systems such as data integrity, pooled storage, and performance. 
+To maintain the data's integrity, they implemented check-sums into the system to ensure that the information was being read and stored properly.
+With the implementation of pooled storage, the Z file system allocates storage from a pool of free space, thus allowing for new storage to be added by adding new devices and allows for sharing with other file systems.
+In addition, the ZFS provided several layered cache system to help increase the speed in which the file system would be able to function. 
+
+While windows has a history of using several different file systems such as NTFS and exFAT, FAT will be the subject of focus due to its prolific nature. 
+FAT, also known as File Allocation Table is a file system that is compatible with most virtual file systems, thus making it a staple for most data exchanging. 
+The basis for how FAT works is through a large index table that point to contiguous areas of disk space known as clusters.
+The indexes on the table relate information about what is inside these clusters at any given time.
+This method would allow you to use cluster chains to find successive parts of a file, and find what sections of storage are in use. 
+What made FAT so reputable among the computational world was its ability be robust, maintain good performance, and be very light on its implementation.
+Another key to FAT becoming so prolific was that it was used on most common storage devices and personal electronics.   
+
+\chapter{Differences in Interrupt Methodology}
+
+\section{Introduction}
+One of the operating systems key jobs is to integrate outside hardware and their functions into the system, but we can routinely run into situations where the the cpu should be stuck waiting on the hardware to complete its request. 
+As a solution to this problem, operating systems have interrupt systems.
+The way a basic interrupt signal works is through sending a signal to the processes, and when the processes receives the signal, it halts execution and relates the value of the interrupt to the operating system to handle. 
+While this process is relatively standard, the way that the system handles the interrupt request is where they vary. 
+
+\subsection{Linux}
+Linux handlers are in essence C functions that match a specific prototype in relation to the interrupt received.
+Another key part of the Linux interrupt handler is that they are called by the kernel under a special context known as the interrupt context that makes the unblock-able.
+Due to their nature of being unblock-able, they need to be able to process the interrupt as quickly as possible.
+To achieve this end, the Linux interrupt is broken into two halves distinguished as a top and a bottom half. 
+The top half is designed to be quick  and respond to the initial sender that it has been received and is being processed and deal with any time sensitive processing. 
+Then after the top half of the request is processed, the bottom half can then preform any additional processes at a later and more convenient time.
+
+\subsection{FreeBSD}
+The FreeBSD operating system handles a variety of different styles of interrupts. 
+A basic interrupt request is handled by giving the interrupt its own thread context that run at real-time priority on the kernel. 
+These styles of interrupt handlers are known as heavyweight interrupt threads due to the fact they have to preform a full context switch.
+This would mean that the interrupt would need to wait until the current running kernel thread would either block or return for the interrupt thread to run. 
+The other type of interrupt that can be called is a fast interrupt.
+Using a specific flag, these interrupts are typically clled by the system clock or device input.
+This leads to the conclusion that the fast interrupts can't acquire blocking locks, so they have to run via spin mutexes. 
+
+\subsection{Windows}
+In the Windows operating system, interrupts are classified in two separate categories based on whether they are critical or not. 
+For process that aren't deemed critical, they are passed into a queue in which the short term scheduler will process.
+In a situation when you have a critical interrupt, they are sent using a special interrupt mask register.
+The basic structure to all the requests mimic that of the Linux two part interrupt with the mandatory first part, and the secondary part which if it is critical will be processed immediately. 
+
+
+\chapter{Bibliography}
+Device Drivers, P. and Pugalia, A. (2018). Device Drivers, Part 9: I/O Control in Linux - LINUX For You. [online] Open Source For You. Available at: https://opensourceforu.com/2011/08/io-control-in-linux/ [Accessed 10 May 2018].
+
+Docs.microsoft.com. (2018). Example I/O Request - An Overview. [online] Available at: https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/example-i-o-request---an-overview [Accessed 10 May 2018].
+
+Freebsd.org. (2018). 2.6.I/O System. [online] Available at: https://www.freebsd.org/doc/en/books/design-44bsd/overview-io-system.html [Accessed 10 May 2018].
+
+Marshall Kirk McCusick and George V. Neville-Neil, Design and Implementation of the FreeBSD Operating System 2/e, Addison-Wesley, 2015, ISBN: 978-0-32196897-5
+
+Mark Russinovich, David Solomon, and Alex Ionescu, Windows Internals, Part 1 6/e, Microsoft Press, 2012, ISBN: 978-0-73564873-9
+
+Mark Russinovich, David Solomon, and Alex Ionescu, Windows Internals, Part 2 6/e, Microsoft Press, 2012, ISBN: 978-0-73566587-3
+
+Notes.shichao.io. (2018). Chapter 7. Interrupts and Interrupt Handlers - Shichao's Notes. [online] Available at: https://notes.shichao.io/lkd/ch7/\#interrupts [Accessed 13 Jun. 2018].
+
+sachdeva, c. (2018). How Windows 8 manages the Interrupt handler?. [online] Techulator. Available at: http://www.techulator.com/resources/4529-How-Windows-manages-Interrupt-handler.aspx [Accessed 13 Jun. 2018].
+
+Win.tue.nl. (2018). The Linux kernel: The Linux Virtual File System. [online] Available at: https://www.win.tue.nl/~aeb/linux/lk/lk-8.html [Accessed 13 Jun. 2018].
+
+Freebsd.org. (2018). Chapter�19.�The Z File System (ZFS). [online] Available at: https://www.freebsd.org/doc/handbook/zfs.html [Accessed 14 Jun. 2018].
+
+\end{document}
