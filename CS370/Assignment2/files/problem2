@@ -1,0 +1,6 @@
+#!/usr/bin/python
+
+import os
+os.system("openssl dgst -sha256 -hmac " + "a" * 128 + " textfile")
+os.system("openssl dgst -sha256 -hmac " + "a" * 160 + " textfile")
+os.system("openssl dgst -sha256 -hmac " + "a" * 256 + " textfile")

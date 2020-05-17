@@ -1,0 +1,39 @@
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 3
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 3.7685185185185186
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 0.3039581777445855
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 0.3039581777445855
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 0.3039581777445855
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 0.7902912621359224
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_test.txt
+Correct 407
+Wrong 108
+Precentage 0.7902912621359224

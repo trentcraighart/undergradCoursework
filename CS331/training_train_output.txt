@@ -1,0 +1,29 @@
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_train.txt
+Correct 488
+Wrong 18
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_train.txt
+Correct 488
+Wrong 18
+Precentage 27
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_train.txt
+Correct 488
+Wrong 18
+Precentage 27.11111111111111
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_train.txt
+Correct 488
+Wrong 18
+Precentage 0.36445108289768485
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_train.txt
+Correct 488
+Wrong 18
+Precentage 0.36445108289768485
+Using the training set: training_output.txt
+Using the sentences from: preprocessed_train.txt
+Correct 488
+Wrong 18
+Precentage 0.9644268774703557

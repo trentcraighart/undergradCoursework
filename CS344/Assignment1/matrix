@@ -1,0 +1,374 @@
+#!/bin/bash
+#/usr/bin/wc
+
+######################################################################################################
+# Author: Trent Vasquez
+#
+# Summary of File: The goal of the file is to build working functions that satisfy the requirements
+#                  for assignment 1 of CS344 (operating systems)
+#
+#                                          *** NOTE ***
+# A MATRIX is defined as a rectangular set of numbers spaced by tabs (\t) and lines are ended with \n  
+#
+# Functions defined:
+#
+# matrix dims [MATRIX] - Takes a matrix from $2 or stdin and cat's out the function dimensions
+#                        The format of dims is "rows columns"
+#
+# matrix transpose [MATRIX] - Takes the matrix from $2 and converts all the rows into columns
+#
+# matrix mean [MATRIX] - Takes a matrix from $2 and finds the mean of each row, results are returned
+#                        by a string of values seperated by tabs (\t)
+#
+# matrix add [MATRIX] [MATRIX] - Takes two matricies into $2 and $3, it will add their values together
+#                                and return another matrix via a cat
+#
+# matrix multiply [MATRIX] [MATRIX] - Takes two matricies into $2 and $2, it will multiply the
+#                                     matricies and return a new matrix with a cat
+#                                     NOTE: Multiplying A by B is NOT the same as B by A 
+#
+#
+# ERRORS - Any errors encounterd by the functions will return a message to stderr and return 1
+#          If you encounter an error, please send me an email at vasquezt@oregonstate.edu
+#
+######################################################################################################
+
+#######################
+### Function dims() ###
+function dims()
+{
+
+  if [ $# -eq 1 ]
+  then
+    cat > temp
+  else
+    if [ $# -eq 2 ]
+    then
+      if [ -f "$2" ]
+      then
+        cat $2 > temp
+      else
+        echo "parameter error" >&2
+        rm -f temp
+        exit 1
+      fi
+    else
+      echo "parameter error" >&2
+      rm -f temp
+      exit 1
+    fi
+  fi
+  
+  #fix formating with 100's numbers
+
+  #getting the rows count (height)
+
+  cut -c 1 temp > tempCol
+  cat tempCol | tr '\n' '\t' > tempRow
+  count=$(echo -n $(cat tempRow) | wc -m)
+  expr $(expr $count + 1) / 2 > count_1
+
+  rm -f tempRow
+  rm -f tempCol
+
+  #getting the column count (width)
+  
+  head -n 1 temp > tempRow 
+  wc -w tempRow > count
+  head -c 3 count > count_3
+  echo $(cat count_3) | tr -d '\n' > count_2
+
+  #Concatonating the two resualts and formating them
+
+  cat count_1 count_2 > final
+  tr '\n' ' ' < final > formated_final 
+  cat formated_final
+
+
+  #I learned about rm -f temp"$$"* after writing this function
+  #Future functions will implement temp before all file names
+
+  rm -f final
+  rm -f formated_final
+  rm -f count
+  rm -f count_1
+  rm -f count_2
+  rm -f count_3
+  rm -f tempCol
+  rm -f tempRow
+  rm -f temp"$$"*
+  exit 0
+}
+
+############################
+### Function transpose() ###
+function transpose()
+{
+  #check if the value function is readable
+  if [ ! -r $2 ] || [ ! -e $2 ]
+  then
+    echo "file isn't readable" >&2
+    exit 1
+  fi 
+
+ 
+  cat $2 > temp
+   
+  #get the number of columns
+
+  cut -c 1 temp > tempCol
+  cat tempCol | tr '\n' '\t' > tempRow
+  count=$(echo -n $(cat tempRow) | wc -m)
+  expr $(expr $count + 1) / 2 > tempcount_rows
+  num_rows=$(<tempcount_rows)
+
+  #set file format with first column
+  number=2
+  echo $(head -1 temp) > temp_Row
+  tr ' ' '\n' < temp_Row > tempoutput_file
+
+  #iterate through rows, convert them to columns, then paste them to output
+
+  while [ $number -le $(($num_rows)) ]
+  do
+    echo $(head -$number temp | tail -1) > temp_Row
+    tr ' ' '\n' < temp_Row > tempnew_Col
+    paste -d '\t' tempoutput_file tempnew_Col > tempextra_file
+    cat tempextra_file > tempoutput_file
+    number=$((number+1))
+  done
+
+  #OUTPUT/Clean up
+
+  cat tempoutput_file
+  rm -f temp"$$"*
+  exit 0
+}
+
+#######################
+### Function mean() ###
+function mean()
+{
+  #Our goal here is to convert the columns to rows
+  #This will make it much easier to work with
+  ./matrix transpose $2 > tempsav
+  ./matrix dims $2 > temp_dims
+  dims=$(echo $(cat temp_dims))
+  num_cols=$(echo $dims | cut -f1 -d' ')
+  num_rows=$(echo $dims | cut -f2 -d' ')
+
+  echo $num_cols > params
+  echo $num_rows >> params
+
+  cat tempsav > temp
+  echo "" > temp_mean
+  number=1
+
+  #goes through each row (colums converted), sums, then divides for mean
+
+  while [ $number -le $(($num_rows)) ]
+  do
+    echo $(head -$number temp | tail -1) > temp_Row
+    stringval=$(cat temp_Row)
+    echo ${stringval// / + } > temp_formated_row
+    temp_sum=$(expr $(cat temp_formated_row))
+    
+    #this facilitates rounding
+
+    if [ $(($temp_sum)) -gt 0 ]
+    then
+      echo $(((temp_sum + (num_cols / 2)) / num_cols)) >> temp_mean
+    else
+      echo $(((temp_sum - (num_cols / 2)) / num_cols)) >> temp_mean
+    fi
+    number=$((number+1))
+  done
+
+  #this block here is formating the result for the grading script
+
+  tr '\n' '\t' < temp_mean > temp_final
+  cut -f2- temp_final > temp_formated_1
+  rev temp_formated_1 > temp_reverse
+  cut -f2- temp_reverse > temp_formated_2
+  rev temp_formated_2 > temp_final_form
+
+  #send anwser to stdin, cleanup, and exit
+
+  cat temp_final_form
+  rm -f temp*
+  exit 0
+}
+
+
+######################
+### Function add() ###
+function add()
+{
+  #check if right number of args
+  if [ $# -ne 3 ]
+  then 
+    echo "wrong number of add function parameters" >&2
+    exit 1
+  fi
+
+
+
+  #first check if the matricies match parameters
+
+  params1=$(./matrix dims $2)
+  params2=$(./matrix dims $3)
+
+  if [ "$params1" == "$params2" ]
+  then
+    ./matrix dims $2 > temp_dims
+    dims=$(echo $(cat temp_dims))
+    num_cols=$(echo $dims | cut -f1 -d' ')
+    num_rows=$(echo $dims | cut -f2 -d' ')
+
+    cat $2 > temp1
+    cat $3 > temp2
+
+    #below is the first loop that grabs each matricies nth row
+
+    number=1
+    while [ $number -le $num_cols ]
+    do
+      temp_Row1=$(echo $(head -$number temp1 | tail -1))
+      temp_Row2=$(echo $(head -$number temp2 | tail -1))
+      echo "" > temp_new_row
+      elem=1
+      while [ $elem -le $num_rows ]
+      do
+
+        #here the matrix will grab the kth element of the nth row
+        #it will then add them and store in a temp row
+
+        val1=$(echo $temp_Row1 | cut -f$elem -d' ')
+        val2=$(echo $temp_Row2 | cut -f$elem -d' ')
+        echo $((val1 + val2)) >> temp_new_row
+        elem=$((elem+1))
+      done
+
+      #here we format the temp row and insert it into our new matrix
+
+      tr '\n' '\t' < temp_new_row > temp_form_row
+      echo $(cat temp_form_row) >> temp_new_mat
+      number=$((number+1))
+    done
+
+    #Here we format and cat out our final matrix
+
+    tr ' ' '\t' < temp_new_mat > temp_formated_mat
+    echo $(cat temp_new_mat) > anwser
+    cat temp_formated_mat    
+
+    rm -f temp*
+    exit 0
+  else
+    echo "matrix parameters do not match" >&2
+    exit 1
+  fi
+}
+
+
+#########################
+### Function multiply ###
+function multiply()
+{
+  #get parameters for matricies
+
+  params1=$(./matrix dims $2)
+  params2=$(./matrix dims $3)
+  num_rows1=$(echo $params1 | cut -f1 -d' ')
+  num_cols1=$(echo $params1 | cut -f2 -d' ')
+  num_rows2=$(echo $params2 | cut -f1 -d' ')
+  num_cols2=$(echo $params2 | cut -f2 -d' ')
+  cat $2 > temp1
+  ./matrix transpose $3 > temp2
+  
+  #note transposed matrix 2 for easier operations
+  
+  #test if its a valid pair of matricies
+
+  if [ $((num_cols1)) -eq $((num_rows2)) ]
+  then
+
+  #number will track current row of matrix A/1
+
+  number=1
+  while [ $number -le $num_rows1 ] 
+  do
+
+    #knum will track the current column (converted to row) of matrix B/2
+
+    knum=1
+    while [ $knum -le $num_cols2 ]
+    do
+
+      #elem will track the current spot in the row/column
+
+      elem=1    
+
+      #Here we grab A's first row, and B's first transposed column
+
+      temp_Row1=$(echo $(head -$number temp1 | tail -1))
+      temp_Row2=$(echo $(head -$knum temp2 | tail -1))
+      while [ $elem -le $((num_cols1)) ]
+      do
+
+        #Here we will multiply coresponding matrix elements, then put them into a file to be added later
+
+        val1=$(echo $temp_Row1 | cut -f$elem -d' ')
+        val2=$(echo $temp_Row2 | cut -f$elem -d' ')
+        echo $((val1 * val2)) >> temp_mults
+        elem=$((elem + 1))
+      done
+
+      #Here we will format the products, sum them, then put them in a new file for the row
+
+      tr '\n' ' ' < temp_mults > temp_format_addition
+      stringval=$(cat temp_format_addition)
+      echo ${stringval// / + } > temp_sum_func
+      temp_pre_modified=$(echo $(cat temp_sum_func))
+      temp_post_modified=${temp_pre_modified%?}
+      echo $temp_post_modified > temp_sum_func
+      sum=$(expr $(cat temp_sum_func))
+      echo $sum >> temp_fin_row
+      rm -f temp_mults
+      knum=$((knum+1))
+    done
+
+    #With the sumed row, we will format and put it into the final matrix
+
+    tr '\n' '\t' < temp_fin_row > temp_jam
+    echo $(cat temp_jam) >> temp_fin_matrix
+    rm -f temp_fin_row
+    number=$((number+1))
+  done
+
+  #formating then submiting final anwser
+ 
+  tr ' ' '\t' < temp_fin_matrix > temp_final_anwser 
+  cat temp_final_anwser
+  rm -f temp*
+  exit 0
+
+  else
+    echo "improper matricies size for multiplication" >&2
+    exit 1
+  fi
+}
+
+
+
+### Checking if the function called is valid ###
+
+
+if [ $1 == dims ] || [ $1 == transpose ] || [ $1 == mean ] || [ $1 == add ] || [ $1 == multiply ]
+then
+  "$1" $@
+  exit 0
+else
+  echo "not valid command" >&2
+  exit 1
+fi
