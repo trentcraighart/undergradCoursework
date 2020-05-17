@@ -1,0 +1,1 @@
+afl-fuzz -i i -o o -Q -- ./example9

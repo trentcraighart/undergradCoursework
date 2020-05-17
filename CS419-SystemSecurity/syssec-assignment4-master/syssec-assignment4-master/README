@@ -1,0 +1,3 @@
+Task 1: Set LD_PRELOAD or LD_LIBRARY PATH to hijack some functions
+Task 2: Use ptrace to hijack a system call
+Task 3: Use MBOX to hijack a system call

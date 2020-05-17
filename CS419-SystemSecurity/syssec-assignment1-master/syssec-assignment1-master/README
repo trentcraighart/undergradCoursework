@@ -1,0 +1,9 @@
+Rowhammer!
+
+Task 1: Implement rdtscp, and measure timestamps from the CPU!
+
+Task 2: Impelment clflush, and measure cache-miss time!
+
+Task 3: Use rdtscp and clflush, and measure row access time!
+
+rowhammer: launch the rowhammer attack!

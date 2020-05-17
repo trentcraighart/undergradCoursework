@@ -1,0 +1,5 @@
+Task1: Implement oblivious primitives in util.h
+Task2: Apply oblivious primitives to access data in the memory of an Enclave
+        -> edit Enclave/Enclave.cpp
+Task3: Measure the access time (ocall_insecure_access vs ocall_oram_access)
+        -> edit App/App.cpp, use __rdtscp()

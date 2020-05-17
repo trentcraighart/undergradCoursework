@@ -1,0 +1,1 @@
+LD_PRELOAD=$PWD/puts.so ~/bin/syssec-assignment4/task1/task1

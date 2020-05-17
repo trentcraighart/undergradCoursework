@@ -1,0 +1,19 @@
+Pin doc:
+    https://software.intel.com/sites/landingpage/pintool/docs/97438/Pin/html/
+
+Task 1: libhook
+    Use Intel Pin to hook library calls
+    Mask write();
+
+Task 2: syscallhook
+    Use Intel Pin to hook system calls
+    Mask syscall 1 (write())
+
+Task 3: instructionhook
+    Use Intel Pin to hook each instruction
+    Block rdtscp, make it always return 0
+
+Task 4: instructioncount
+    Use ins_count to apply auto-reverse-engineering to CTF challenges
+
+# run set-path.sh to put Intel Pin to your PATH..

@@ -1,0 +1,13 @@
+Get the correct flags for following two binaries by just counting the
+number of instructions retired!
+
+ais3_crackme:
+    you need to run the program with the flag as follows:
+        ./ais3_crackme asdfadsfasdf
+    Hint: the flag starts with ais3{
+
+r100:
+    you need to run the program with the flag as follows:
+        ./r100
+        Put your flag as an input to stdin
+    Hint: the flag starts with Code

@@ -1,0 +1,60 @@
+====
+TIPS
+====
+
+
+# Hook syscall
+
+1. Change `linux/x86_64/sboxcall.h` to put a handler for a syscall
+
+    e.g., to hook 'sys_write()', you may add sbox_write() at sboxcall.h
+    as follows:
+    { 3,    TD,     sys_write,                  sbox_write,	"write"},
+
+2. Add declaration of sbox_write (if the function is new) in syscall.h
+    e.g., in linux/syscall.h, add:
+    int sbox_write();
+
+3. Implement sbox_write in sbox.c
+    e.g.,
+
+        int sbox_write(struct tcb *tcp)
+        {
+            if (entering(tcp)) {
+                printf("[SBOX] Writing something!\n");  // print syscall hook
+                printf("write(%ld, %p, %ld);\n",        // print args
+                        tcp->u_arg[0],
+                        tcp->u_arg[1],
+                        tcp->u_arg[2]);
+                sbox_rewrite_arg(tcp, 0, 2);            // change args
+                sbox_rewrite_arg(tcp, 2, 10);
+            }
+        }
+
+
+
+# Update args
+
+Use sbox_rewrite_arg(tcp, arg_num, value);
+
+e.g., sbox_rewrite_arg(tcp, 0, 2); // this will change the 1st arg (0th)
+      of write() (file descriptor) to 2 (stderr).
+
+
+# Update memory
+
+Use sbox_hijack_mem(tcp, arg_num, mem_ptr, length);
+
+e.g., sbox_hijack_mem(tcp, 1, "ls -als", 8); // this will change the 2nd (1st)
+        arg of write (memory buffer to print out) to "ls -als\0".
+
+
+# Executing a shell
+
+1. change orig_eax (syscall number) to 0x3b (execve) (tcp->regs.orig_rax)
+2. set 1st arg as the address of /bin/sh    (use sbox_rewrite_arg)
+3. set 2nd arg as 0
+4. set 3rd arg as 0
+
+Then your task2 program will run execve("/bin/sh", 0, 0) instead of
+invoking write(1, "something....", 55);

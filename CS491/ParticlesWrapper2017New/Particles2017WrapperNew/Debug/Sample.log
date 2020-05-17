@@ -1,0 +1,40 @@
+﻿  sample.cpp
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\glui.h(758,47): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\glui.h(758,31): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(252,16): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(253,13): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(257,16): warning C4305:  '-=': truncation from 'double' to 'float'
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(258,17): warning C4305:  '-=': truncation from 'double' to 'float'
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(259,25): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(260,25): warning C4244:  '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(262,31): warning C4244:  '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(384,14): warning C4244:  '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(323,6): warning C4101:  'ti': unreferenced local variable
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(322,6): warning C4101:  'j': unreferenced local variable
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(466,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(490,19): warning C4244:  'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(43,27): warning C4244:  'initializing': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(669,11): warning C4244:  'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(671,13): warning C4244:  'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(673,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(674,28): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(675,27): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(676,18): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(681,26): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(682,57): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(683,26): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(684,15): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(687,12): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(43,27): warning C4244:  '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1081,17): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1082,18): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1154,13): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1182,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1184,8): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1185,8): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1186,8): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1252,14): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1257,39): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\sample.cpp(1257,22): warning C4244:  'argument': conversion from 'double' to 'GLfloat', possible loss of data
+sample.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+  Sample.vcxproj -> C:\Users\Trent Hart\Downloads\School\ParticlesWrapper2017New\Particles2017WrapperNew\.\Debug\Sample.exe

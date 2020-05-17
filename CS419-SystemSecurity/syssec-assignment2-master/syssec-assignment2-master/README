@@ -1,0 +1,7 @@
+Task 1: launch the flush+reload attack to figure out which value has read by
+        victim via observing victim's read for 256 times
+        (guess each character).
+
+Task 2: launch the flush+reload attack to figure out which value has read by
+        victim via observing victim's read for 1 time
+        (guess each bit).
